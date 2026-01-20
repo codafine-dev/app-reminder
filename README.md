@@ -141,9 +141,9 @@ npm run preview
 
 ## 🌐 Langues supportées
 
-- 🇫🇷 **Français**
-- 🇬🇧 **English**
-- 🇨🇳 **简体中文** (Chinois simplifié)
+-  **Français**
+-  **English**
+-  **简体中文** (Chinois simplifié)
 
 ## 📝 License
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Reminder } from '../types';
 import { translations, Language } from '../translations';
@@ -13,7 +12,7 @@ interface ReminderFormModalProps {
   onDelete: (id: string) => void;
 }
 
-const ICONS = ['', '🍼', '💊', '🍎', '💧', '🧸', '🛁', '🏃', '📚', '🦴', '🧘'];
+const ICONS = ['', '🍼', '💊', '🎯', '💧', '🧸', '🛁', '🏃', '📚', '🦴', '🧘'];
 const COLORS = [
   { name: 'Blue', value: '#3b82f6' },
   { name: 'Red', value: '#ef4444' },
@@ -37,15 +36,21 @@ const ReminderFormModal: React.FC<ReminderFormModalProps> = ({ isOpen, initialDa
   const t = translations[language];
 
   useEffect(() => {
+    //if (!isOpen) return;
+    
     if (initialData) {
+      // Mode édition : charger les valeurs existantes
       setLabel(initialData.label);
       setIcon(initialData.icon);
       const totalHours = initialData.intervalHours;
       setSelDays(Math.floor(totalHours / 24));
+      console.log('before',selHours)
       setSelHours(Math.floor(totalHours % 24));
+      console.log('after',selHours)
       setSelMinutes(Math.round((totalHours % 1) * 60));
       setColor(initialData.color || COLORS[0].value);
     } else {
+      // Mode création : valeurs par défaut
       setLabel('');
       setIcon(ICONS[1]);
       setSelDays(0);
@@ -53,7 +58,8 @@ const ReminderFormModal: React.FC<ReminderFormModalProps> = ({ isOpen, initialDa
       setSelMinutes(0);
       setColor(COLORS[0].value);
     }
-  }, [initialData, isOpen]);
+  //}, [isOpen, initialData]);
+  }, [selHours, initialData]);
 
   if (!isOpen) return null;
 

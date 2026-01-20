@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Reminder } from './types';
 import ReminderCard from './components/ReminderCard';
@@ -52,6 +51,7 @@ const App: React.FC = () => {
   const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
   const [viewingHistory, setViewingHistory] = useState<Reminder | null>(null);
   const [now, setNow] = useState(Date.now());
+  const [modalKey, setModalKey] = useState(0); // Clé pour forcer la recréation du modal
 
   const t = translations[language];
 
@@ -124,7 +124,19 @@ const App: React.FC = () => {
 
   const openEdit = (reminder: Reminder) => {
     setEditingReminder(reminder);
+    setModalKey(prev => prev + 1); // Incrémenter la clé pour forcer la recréation
     setIsFormOpen(true);
+  };
+
+  const openNew = () => {
+    setEditingReminder(null);
+    setModalKey(prev => prev + 1); // Incrémenter la clé pour forcer la recréation
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingReminder(null);
   };
 
   return (
@@ -140,7 +152,7 @@ const App: React.FC = () => {
         <div className="flex items-center gap-2">
           {view === 'list' && (
             <button 
-              onClick={() => { setEditingReminder(null); setIsFormOpen(true); }}
+              onClick={openNew}
               className="bg-blue-600 text-white p-2 rounded-full shadow-lg shadow-blue-200 active:scale-90 transition-transform"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,7 +184,7 @@ const App: React.FC = () => {
           <div className="space-y-6 animate-in fade-in duration-300">
             {reminders.length === 0 ? (
               <div className="text-center py-20">
-                <div className="text-6xl mb-4">📭</div>
+                <div className="text-6xl mb-4">🔭</div>
                 <p className="text-slate-400">{t.noTasks}</p>
               </div>
             ) : (
@@ -196,10 +208,11 @@ const App: React.FC = () => {
 
       {/* Modals */}
       <ReminderFormModal 
+        key={modalKey} // ✅ KEY ajoutée ici pour forcer la recréation
         isOpen={isFormOpen} 
         initialData={editingReminder}
         language={language}
-        onClose={() => { setIsFormOpen(false); setEditingReminder(null); }} 
+        onClose={closeForm}
         onSave={handleSaveReminder} 
         onDelete={handleDelete}
       />
