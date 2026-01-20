@@ -1,0 +1,28 @@
+# --------------------------------------------------
+# 🧑‍💻 Development Dockerfile for Vite + React + TS
+# --------------------------------------------------
+# Uses Node 20 to match local development environment
+FROM node:20
+
+# Create application directory inside container
+WORKDIR /app
+
+# Copy only package.json + lock file first to install deps
+# This allows Docker to cache dependencies if source code changes
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Install nodemon globally
+RUN npm install -g nodemon
+
+# Copy the rest of the project files (React / TS / Vite source)
+COPY . .
+
+# Vite dev server needs to be reachable from outside Docker,
+# so explicitly expose its default port
+EXPOSE 5173
+
+# Run Vite dev server; HOST=0.0.0.0 allows external access
+CMD ["npm", "run", "dev", "--", "--host"]
